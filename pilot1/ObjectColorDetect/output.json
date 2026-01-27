@@ -1,0 +1,56 @@
+{
+  "id": "594b7eee-9fc3-48c6-a07a-5aad87e774cd",
+  "project": "5015d05e-0ccd-45aa-a08d-f6f08952f23d",
+  "iteration": "93a16f82-fd89-442c-8788-1dcbcc4471c0",
+  "created": "2026-01-13T15:55:27.302Z",
+  "predictions": [
+    {
+      "probability": 0.99952614,
+      "tagId": "8d40ee0b-c65a-4141-a4aa-07b3299330de",
+      "tagName": "stencil",
+      "boundingBox": {
+        "left": 0.2837298,
+        "top": 0.37582675,
+        "width": 0.32895654,
+        "height": 0.086551785
+      },
+      "tagType": "Regular"
+    },
+    {
+      "probability": 0.9995757,
+      "tagId": "9626ade0-b9b0-48b4-87f7-a7085a38fac7",
+      "tagName": "vendor_tag",
+      "boundingBox": {
+        "left": 0.44854,
+        "top": 0.61844254,
+        "width": 0.061957866,
+        "height": 0.0636065
+      },
+      "tagType": "Regular"
+    },
+    {
+      "probability": 0.9995433,
+      "tagId": "9626ade0-b9b0-48b4-87f7-a7085a38fac7",
+      "tagName": "vendor_tag",
+      "boundingBox": {
+        "left": 0.44871408,
+        "top": 0.46649072,
+        "width": 0.06931245,
+        "height": 0.051739722
+      },
+      "tagType": "Regular"
+    },
+    {
+      "probability": 0.9995004,
+      "tagId": "9626ade0-b9b0-48b4-87f7-a7085a38fac7",
+      "tagName": "vendor_tag",
+      "boundingBox": {
+        "left": 0.4648268,
+        "top": 0.5439925,
+        "width": 0.06459591,
+        "height": 0.055487692
+      },
+      "tagType": "Regular"
+    }
+  ]
+}
