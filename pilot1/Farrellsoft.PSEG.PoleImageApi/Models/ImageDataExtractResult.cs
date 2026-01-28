@@ -7,4 +7,4 @@ namespace Farrellsoft.PSEG.PoleImageApi.Models;
 
 public record Rect(double Left, double Top, double Width, double Height);
 
-public record ImageDataExtractResult(int VendorTagCount, Rect? StencilBoundingBox);
+public record ImageDataExtractResult(List<VendorTag> VendorTags, Rect? StencilBoundingBox);

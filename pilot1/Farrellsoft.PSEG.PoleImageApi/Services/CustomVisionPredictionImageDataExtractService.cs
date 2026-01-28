@@ -41,7 +41,8 @@ namespace Farrellsoft.PSEG.PoleImageApi.Services
             var result = await client.DetectImageAsync(projectId, publishedName, imageStream);
 
             var vendorTagPredictions = result.Predictions
-                .Where(p => p.TagName.Equals("vendor tags", StringComparison.OrdinalIgnoreCase) && p.Probability > 0.5)
+                .Where(p => p.TagName.Equals("vendor_tag", StringComparison.OrdinalIgnoreCase) && p.Probability > 0.5)
+                .Select(p => new VendorTag(p.Probability))
                 .ToList();
 
             var topStencilPrediction = result.Predictions
@@ -59,7 +60,7 @@ namespace Farrellsoft.PSEG.PoleImageApi.Services
                     topStencilPrediction.BoundingBox.Height);
             }
 
-            return new ImageDataExtractResult(vendorTagPredictions.Count, stencilBoundingBox);
+            return new ImageDataExtractResult(vendorTagPredictions, stencilBoundingBox);
         }
     }
 

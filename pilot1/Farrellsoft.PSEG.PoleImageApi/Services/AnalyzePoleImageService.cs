@@ -6,12 +6,13 @@ namespace Farrellsoft.PSEG.PoleImageApi.Services;
 
 public class AnalyzePoleImageService(IImageDataExtractService dataExtractService, IImageReadService imageReadService)
 {
-    public async Task<PoleImageAnalysisResult> AnalyzeImageAsync(byte[] imageBytes)
+    public async Task<PoleImageAnalysisResult> AnalyzeImageAsync(byte[] imageBytes, string fileName)
     {
         // Step 1: Extract data from the complete image
         var extractResult = await dataExtractService.ExtractDataAsync(imageBytes);
 
         string? stencilValue = null;
+        double? stencilConfidence = null;
 
         // Step 2: If a stencil bounding box was found, slice the image and read the stencil
         if (extractResult.StencilBoundingBox != null)
@@ -19,10 +20,39 @@ public class AnalyzePoleImageService(IImageDataExtractService dataExtractService
             var stencilImageBytes = SliceImage(imageBytes, extractResult.StencilBoundingBox);
             var stencilResult = await imageReadService.ReadStencilValue(stencilImageBytes);
             stencilValue = stencilResult?.StencilValue;
+            stencilConfidence = stencilResult?.Confidence;
         }
 
-        // Step 3: Return the results
-        return new PoleImageAnalysisResult(extractResult.VendorTagCount, stencilValue);
+        // Step 3: Calculate validity
+        var isValid = CalculateValidity(extractResult.VendorTags, stencilValue, fileName);
+
+        // Step 4: Return the results
+        return new PoleImageAnalysisResult(extractResult.VendorTags, stencilValue, stencilConfidence, isValid);
+    }
+
+    private bool CalculateValidity(List<VendorTag> vendorTags, string? stencilValue, string fileName)
+    {
+        // Rule 1: Must have at least one vendor tag
+        if (vendorTags == null || vendorTags.Count == 0)
+        {
+            return false;
+        }
+
+        // Rule 2: Stencil value must match the first portion of the filename
+        if (string.IsNullOrWhiteSpace(stencilValue))
+        {
+            return false;
+        }
+
+        // Extract expected stencil from filename (before first underscore)
+        var expectedStencil = fileName.Split('_').FirstOrDefault();
+        if (string.IsNullOrWhiteSpace(expectedStencil))
+        {
+            return false;
+        }
+
+        // Compare stencil values (case-insensitive)
+        return string.Equals(stencilValue.Trim(), expectedStencil.Trim(), StringComparison.OrdinalIgnoreCase);
     }
 
     private byte[] SliceImage(byte[] imageBytes, Rect boundingBox)

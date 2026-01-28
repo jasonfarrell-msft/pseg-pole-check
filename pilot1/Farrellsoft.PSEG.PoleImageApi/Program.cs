@@ -34,7 +34,7 @@ app.MapPost("/image/analyze", async (IFormFile file, AnalyzePoleImageService ana
     var imageBytes = memoryStream.ToArray();
 
     // Analyze the image
-    var result = await analysisService.AnalyzeImageAsync(imageBytes);
+    var result = await analysisService.AnalyzeImageAsync(imageBytes, file.FileName);
 
     return Results.Ok(result);
 })
