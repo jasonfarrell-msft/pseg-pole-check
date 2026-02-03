@@ -13,8 +13,19 @@ public class GptResponseImageReadService(IConfiguration configuration) : IImageR
     {
         var endpoint = configuration["FoundryEndpoint"];
         var deploymentName = configuration["FoundryModelDeploymentName"];
+        var clientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID");
 
-        var credential = new DefaultAzureCredential();
+        var credentialOptions = new DefaultAzureCredentialOptions
+        {
+            Diagnostics = { IsLoggingEnabled = true }
+        };
+
+        if (!string.IsNullOrEmpty(clientId))
+        {
+            credentialOptions.ManagedIdentityClientId = clientId;
+        }
+
+        var credential = new DefaultAzureCredential(credentialOptions);
         var client = new AzureOpenAIClient(new Uri(endpoint!), credential);
         var chatClient = client.GetChatClient(deploymentName);
 
