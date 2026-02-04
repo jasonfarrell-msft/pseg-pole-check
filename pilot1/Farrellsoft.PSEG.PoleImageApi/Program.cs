@@ -8,6 +8,7 @@ builder.Services.AddOpenApi();
 
 // Register application services
 builder.Services.AddTransient<AnalyzePoleImageService>();
+builder.Services.AddSingleton<BlobStorageService>();
 builder.Services.AddSingleton<IImageDataExtractService, CustomVisionPredictionImageDataExtractService>();
 builder.Services.AddSingleton<IImageReadService, GptResponseImageReadService>();
 

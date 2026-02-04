@@ -118,6 +118,23 @@ body {
   border-width: 0.15em;
 }
 
+/* Uploaded Image Container */
+.uploaded-image-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--pseg-light-gray);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.uploaded-image-container img {
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 /* Responsive adjustments */
 @media (max-width: 991px) {
   .header-title {

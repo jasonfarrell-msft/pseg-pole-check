@@ -4,11 +4,14 @@ using SixLabors.ImageSharp.Processing;
 
 namespace Farrellsoft.PSEG.PoleImageApi.Services;
 
-public class AnalyzePoleImageService(IImageDataExtractService dataExtractService, IImageReadService imageReadService)
+public class AnalyzePoleImageService(IImageDataExtractService dataExtractService, IImageReadService imageReadService, BlobStorageService blobStorageService)
 {
     public async Task<PoleImageAnalysisResult> AnalyzeImageAsync(byte[] imageBytes, string fileName)
     {
-        // Step 1: Extract data from the complete image
+        // Step 1: Upload the image to blob storage and get the SAS URL
+        var imageUrl = await blobStorageService.UploadImageAsync(imageBytes, fileName);
+
+        // Step 2: Extract data from the complete image
         var extractResult = await dataExtractService.ExtractDataAsync(imageBytes);
 
         string? stencilValue = null;
@@ -23,11 +26,11 @@ public class AnalyzePoleImageService(IImageDataExtractService dataExtractService
             stencilConfidence = stencilResult?.Confidence;
         }
 
-        // Step 3: Calculate validity
+        // Step 4: Calculate validity
         var isValid = CalculateValidity(extractResult.VendorTags, stencilValue, fileName);
 
-        // Step 4: Return the results
-        return new PoleImageAnalysisResult(extractResult.VendorTags, stencilValue, stencilConfidence, isValid);
+        // Step 5: Return the results including the image URL
+        return new PoleImageAnalysisResult(extractResult.VendorTags, stencilValue, stencilConfidence, isValid, imageUrl);
     }
 
     private bool CalculateValidity(List<VendorTag> vendorTags, string? stencilValue, string fileName)

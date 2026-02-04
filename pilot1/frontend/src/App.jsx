@@ -13,6 +13,9 @@ function App() {
   const handleImageUpload = async (file) => {
     setIsLoading(true);
     setError(null);
+    // Hide previous results and image when starting new request
+    setResults(null);
+    setExpectedStencil('');
     
     // Extract expected stencil from filename (first part before _)
     const fileNameParts = file.name.split('_');
@@ -45,7 +48,7 @@ function App() {
       {/* Main Content */}
       <main className="container mt-4">
         <div className="row">
-          {/* Upload Form Column - Left Side */}
+          {/* Left Column - Upload Form and Results */}
           <div className="col-lg-6 mb-4">
             <ImageUpload onUpload={handleImageUpload} isLoading={isLoading} />
             {error && (
@@ -54,11 +57,30 @@ function App() {
                 {error}
               </div>
             )}
+            {/* Results appear below upload form on the left */}
+            {results && (
+              <div className="mt-4">
+                <Results results={results} expectedStencil={expectedStencil} />
+              </div>
+            )}
           </div>
 
-          {/* Results Column - Right Side */}
+          {/* Right Column - Uploaded Image */}
           <div className="col-lg-6 mb-4">
-            <Results results={results} expectedStencil={expectedStencil} />
+            {results && results.imageUrl && (
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <h5 className="card-title mb-4">Uploaded Image</h5>
+                  <div className="uploaded-image-container">
+                    <img 
+                      src={results.imageUrl} 
+                      alt="Uploaded pole" 
+                      className="img-fluid rounded"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
