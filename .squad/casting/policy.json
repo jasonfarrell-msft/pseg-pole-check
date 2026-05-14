@@ -1,0 +1,12 @@
+{
+  "version": "0.9.1",
+  "universe": "Alien",
+  "allowlist": [
+    "Alien"
+  ],
+  "reserved_names": [
+    "Scribe",
+    "Ralph",
+    "@copilot"
+  ]
+}
