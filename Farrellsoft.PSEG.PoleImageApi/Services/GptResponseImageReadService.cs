@@ -38,7 +38,10 @@ public class GptResponseImageReadService(IConfiguration configuration) : IImageR
 
         // Parse the JSON response
         var jsonDoc = JsonDocument.Parse(responseText);
-        var textResult = jsonDoc.RootElement.GetProperty("textResult").GetString();
+        var textResultElement = jsonDoc.RootElement.GetProperty("textResult");
+        var textResult = textResultElement.ValueKind == JsonValueKind.String
+            ? textResultElement.GetString()
+            : textResultElement.GetRawText();
         
         double? confidence = null;
         if (jsonDoc.RootElement.TryGetProperty("confidence", out var confidenceElement))
