@@ -32,7 +32,7 @@ jobs:
           az deployment group what-if \
             --resource-group ${{ vars.AZURE_RG }} \
             --template-file infra/main.bicep \
-            --parameters infra/main.bicepparam
+            --parameters @infra/main.bicepparam
 
   deploy:
     if: github.event_name != 'pull_request'
@@ -51,4 +51,4 @@ jobs:
           az deployment group create \
             --resource-group ${{ vars.AZURE_RG }} \
             --template-file infra/main.bicep \
-            --parameters infra/main.bicepparam
+            --parameters @infra/main.bicepparam

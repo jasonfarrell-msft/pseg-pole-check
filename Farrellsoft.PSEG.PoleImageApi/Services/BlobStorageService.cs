@@ -6,16 +6,23 @@ namespace Farrellsoft.PSEG.PoleImageApi.Services;
 
 public class BlobStorageService
 {
-    private const string StorageAccountName = "stpoleappdemoeus2mx01";
+    private readonly string _storageAccountName;
     private const string ContainerName = "uploads";
     private readonly BlobContainerClient _containerClient;
     private readonly BlobServiceClient _blobServiceClient;
 
-    public BlobStorageService()
+    public BlobStorageService(ILogger<BlobStorageService> logger, IConfiguration configuration)
     {
+        var storageAccountName = configuration["StorageAccountName"];
+        if (string.IsNullOrWhiteSpace(storageAccountName))
+        {
+            throw new InvalidOperationException("StorageAccountName configuration is required.");
+        }
+
+        _storageAccountName = storageAccountName;
         var credential = new DefaultAzureCredential();
         _blobServiceClient = new BlobServiceClient(
-            new Uri($"https://{StorageAccountName}.blob.core.windows.net"),
+            new Uri($"https://{_storageAccountName}.blob.core.windows.net"),
             credential);
         
         _containerClient = _blobServiceClient.GetBlobContainerClient(ContainerName);
@@ -53,7 +60,7 @@ public class BlobStorageService
 
         var blobUriBuilder = new BlobUriBuilder(blobClient.Uri)
         {
-            Sas = sasBuilder.ToSasQueryParameters(userDelegationKey.Value, StorageAccountName)
+            Sas = sasBuilder.ToSasQueryParameters(userDelegationKey.Value, _storageAccountName)
         };
         
         return blobUriBuilder.ToUri().ToString();
