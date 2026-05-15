@@ -12,6 +12,25 @@ builder.Services.AddSingleton<BlobStorageService>();
 builder.Services.AddSingleton<IImageDataExtractService, CustomVisionPredictionImageDataExtractService>();
 builder.Services.AddSingleton<IImageReadService, GptResponseImageReadService>();
 
+var corsOrigin = builder.Configuration["CorsOrigin"] ?? "*";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
+        if (corsOrigin == "*")
+        {
+            policy.AllowAnyOrigin();
+        }
+        else
+        {
+            policy.WithOrigins(corsOrigin);
+        }
+
+        policy.AllowAnyHeader()
+              .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,7 +41,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapPost("/image/analyze", async (IFormFile file, AnalyzePoleImageService analysisService) =>
+app.UseCors("FrontendPolicy");
+
+app.MapPost("/image/analyze",async (IFormFile file, AnalyzePoleImageService analysisService) =>
 {
     if (file == null || file.Length == 0)
     {

@@ -1,0 +1,39 @@
+# =============================================================================
+# azure.yaml
+# Azure Developer CLI (azd) configuration for PSEG Pole Check
+#
+# Deploy with:
+#   azd up                      -- full provision + deploy
+#   azd provision               -- infrastructure only
+#   azd deploy api              -- redeploy API container image only
+#
+# To override the image tag:
+#   azd deploy api --image crpsegpoleappeus2mx01.azurecr.io/image-api:<SHA>
+# =============================================================================
+
+name: pseg-pole-check
+
+services:
+  # ---------------------------------------------------------------------------
+  # Pole Image API — .NET 9 Web API deployed to Container Apps
+  # ---------------------------------------------------------------------------
+  api:
+    project: ./Farrellsoft.PSEG.PoleImageApi
+    language: dotnet
+    host: containerapp
+    docker:
+      path: ./Farrellsoft.PSEG.PoleImageApi/Dockerfile
+      context: ./Farrellsoft.PSEG.PoleImageApi
+
+  # ---------------------------------------------------------------------------
+  # React Frontend — Vite 5 SPA deployed to Azure Storage static website
+  # ---------------------------------------------------------------------------
+  frontend:
+    project: ./frontend
+    language: js
+    host: storage
+
+infra:
+  provider: bicep
+  path: ./infra
+  module: main

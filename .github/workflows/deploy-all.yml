@@ -1,0 +1,23 @@
+name: Deploy All
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  infra:
+    uses: ./.github/workflows/deploy-infra.yml
+    secrets: inherit
+
+  api:
+    needs: infra
+    uses: ./.github/workflows/deploy-api.yml
+    secrets: inherit
+
+  frontend:
+    needs: api
+    uses: ./.github/workflows/deploy-frontend.yml
+    secrets: inherit

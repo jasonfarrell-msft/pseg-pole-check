@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const API_ENDPOINT = 'https://aca-image-api-eus2-mx01.purplesand-57d34aa5.eastus2.azurecontainerapps.io/image/analyze';
+export const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || 'http://localhost:8080';
 
 /**
  * Upload an image file for analysis
