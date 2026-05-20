@@ -26,12 +26,12 @@ services:
       context: ./Farrellsoft.PSEG.PoleImageApi
 
   # ---------------------------------------------------------------------------
-  # React Frontend — Vite 5 SPA deployed to Azure Storage static website
+  # React Frontend — Vite 5 SPA deployed to Azure App Service
   # ---------------------------------------------------------------------------
   frontend:
     project: ./frontend
     language: js
-    host: storage
+    host: appservice
 
 infra:
   provider: bicep

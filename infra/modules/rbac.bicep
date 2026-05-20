@@ -62,17 +62,10 @@ resource appStorageBlobContrib 'Microsoft.Authorization/roleAssignments@2022-04-
 }
 
 // ---------------------------------------------------------------------------
-// Container App → AcrPull (pull container images from the registry)
+// NOTE: Container Apps service auto-creates AcrPull for the system-assigned
+// identity when registries[].identity = 'system' is set on the Container App.
+// We do NOT manage it here to avoid duplicate-assignment conflicts.
 // ---------------------------------------------------------------------------
-resource appAcrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(acrId, containerAppPrincipalId, acrPullRoleId)
-  scope: resourceGroup()
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', acrPullRoleId)
-    principalId: containerAppPrincipalId
-    principalType: 'ServicePrincipal'
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Container App → Key Vault Secrets User (read VISION_KEY secret)

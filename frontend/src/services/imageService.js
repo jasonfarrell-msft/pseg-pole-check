@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-export const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT || 'http://localhost:8080';
+export const API_BASE_URL = import.meta.env.VITE_API_ENDPOINT || 'http://localhost:8080';
+export const API_ENDPOINT = `${API_BASE_URL}/image/analyze`;
 
 /**
  * Upload an image file for analysis

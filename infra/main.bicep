@@ -102,8 +102,15 @@ param customVisionProjectId string = '<set-post-deploy>'
 param customVisionPublishedName string = '<set-post-deploy>'
 
 // ---------------------------------------------------------------------------
-// Shared tags applied to all resources
+// Frontend App Service
 // ---------------------------------------------------------------------------
+@description('Name of the App Service Plan for the frontend')
+param frontendPlanName string
+
+@description('Name of the Web App for the frontend')
+param frontendAppName string
+
+
 @description('Environment label (dev, staging, prod)')
 param environment string = 'dev'
 
@@ -127,7 +134,20 @@ module monitoring 'modules/monitoring.bicep' = {
 }
 
 // ===========================================================================
-// 2. Storage — StorageV2, blob containers, static website
+// 2a. Frontend — App Service Plan + Web App (Vite SPA)
+// ===========================================================================
+module frontend 'modules/frontend.bicep' = {
+  name: 'frontend'
+  params: {
+    planName: frontendPlanName
+    appName: frontendAppName
+    location: location
+    tags: commonTags
+  }
+}
+
+// ===========================================================================
+// 2b. Storage — StorageV2, blob containers (no longer hosts static website)
 // ===========================================================================
 module storage 'modules/storage.bicep' = {
   name: 'storage'
@@ -225,7 +245,6 @@ module containerApp 'modules/containerapp.bicep' = {
     customVisionEndpoint: customVision.outputs.predictionEndpoint
     customVisionProjectId: customVisionProjectId
     customVisionPublishedName: customVisionPublishedName
-    kvUri: keyvault.outputs.kvUri
     appInsightsConnectionString: monitoring.outputs.appInsightsConnectionString
     tags: commonTags
   }
@@ -251,8 +270,8 @@ module rbac 'modules/rbac.bicep' = {
 // ===========================================================================
 // Stack outputs
 // ===========================================================================
-@description('Static website URL for the React frontend')
-output frontendUrl string = storage.outputs.staticWebEndpoint
+@description('Frontend Web App URL')
+output frontendUrl string = 'https://${frontend.outputs.defaultHostname}'
 
 @description('Container App ingress URL for the Pole Image API')
 output containerAppUrl string = 'https://${containerApp.outputs.containerAppFqdn}'

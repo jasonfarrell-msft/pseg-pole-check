@@ -71,6 +71,12 @@ param containerAppName = 'aca-image-api-eus2-px01'
 param containerAppImageTag = 'latest' // Override with git SHA at deploy time
 
 // ---------------------------------------------------------------------------
+// Frontend App Service
+// ---------------------------------------------------------------------------
+param frontendPlanName = 'asp-pole-frontend-eus2-px01'
+param frontendAppName = 'app-pole-frontend-eus2-px01'
+
+// ---------------------------------------------------------------------------
 // Custom Vision runtime config
 // Set these after first deploy once the Custom Vision project exists
 // ---------------------------------------------------------------------------

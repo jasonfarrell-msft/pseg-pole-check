@@ -46,6 +46,8 @@ resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview
       defaultAction: 'Allow'
     }
     disableLocalAuth: false
+    allowProjectManagement: true
+    customSubDomainName: accountName
   }
 }
 

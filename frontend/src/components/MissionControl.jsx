@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { API_ENDPOINT } from '../services/imageService';
+import { API_BASE_URL } from '../services/imageService';
 
 const getBadgeClass = (status) => {
   switch (status) {
@@ -39,23 +39,26 @@ const StatusCard = ({ icon, name, status, detail, category }) => (
 );
 
 const MissionControl = ({ isLoading, results, expectedStencil, error }) => {
-  const [apiHealthy, setApiHealthy] = useState(null);
+  const [apiHealth, setApiHealth] = useState({ status: 'checking', latencyMs: null, error: null });
 
-  // Check API health on component mount
   useEffect(() => {
     const checkApiHealth = async () => {
+      const start = Date.now();
       try {
-        // Basic check - if API_ENDPOINT is configured, assume healthy unless error
-        if (API_ENDPOINT && API_ENDPOINT.includes('http')) {
-          setApiHealthy(true);
+        const res = await fetch(`${API_BASE_URL}/health`, { method: 'GET', signal: AbortSignal.timeout(5000) });
+        const latencyMs = Date.now() - start;
+        if (res.ok) {
+          setApiHealth({ status: 'Operational', latencyMs, error: null });
         } else {
-          setApiHealthy(false);
+          setApiHealth({ status: 'Error', latencyMs, error: `HTTP ${res.status}` });
         }
-      } catch {
-        setApiHealthy(false);
+      } catch (err) {
+        setApiHealth({ status: 'Error', latencyMs: null, error: err.message });
       }
     };
     checkApiHealth();
+    const interval = setInterval(checkApiHealth, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const vendorTagCount = results?.vendorTags?.length ?? 0;
@@ -97,8 +100,25 @@ const MissionControl = ({ isLoading, results, expectedStencil, error }) => {
       icon: 'fas fa-server',
       name: 'Pole Image API',
       category: 'Backend Service',
-      status: error ? 'Error' : isLoading ? 'Processing' : apiHealthy ? 'Operational' : 'Standby',
-      detail: error ? String(error) : (results ? `Last request completed successfully. Endpoint: ${API_ENDPOINT.substring(0, 50)}...` : `API configured and ready. Endpoint: ${API_ENDPOINT.substring(0, 50)}...`),
+      status: error ? 'Error' : isLoading ? 'Processing' : apiHealth.status === 'Operational' ? 'Operational' : apiHealth.status === 'checking' ? 'Standby' : 'Error',
+      detail: error
+        ? String(error)
+        : apiHealth.status === 'Operational'
+          ? `API healthy. Response time: ${apiHealth.latencyMs}ms. Endpoint: ${API_BASE_URL.substring(0, 50)}...`
+          : apiHealth.status === 'Error'
+            ? `Health check failed: ${apiHealth.error}`
+            : `Checking connectivity to ${API_BASE_URL.substring(0, 50)}...`,
+    },
+    {
+      icon: 'fas fa-arrow-right-arrow-left',
+      name: 'Frontend → API Connectivity',
+      category: 'Communication',
+      status: apiHealth.status === 'Operational' ? 'Operational' : apiHealth.status === 'checking' ? 'Standby' : 'Error',
+      detail: apiHealth.status === 'Operational'
+        ? `Live health probe succeeded in ${apiHealth.latencyMs}ms. CORS and routing are confirmed working.`
+        : apiHealth.status === 'Error'
+          ? `Cannot reach API: ${apiHealth.error}. Check CORS, network rules, or API status.`
+          : 'Running connectivity probe now…',
     },
     {
       icon: 'fas fa-brain',

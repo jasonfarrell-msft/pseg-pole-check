@@ -2,7 +2,7 @@
 // containerapp.bicep
 // Provisions Container Apps Environment + Container App for the Pole Image API
 // System-assigned managed identity; image pulled from ACR via AcrPull RBAC
-// VISION_KEY is read from Key Vault via secretRef
+// All Azure service calls use DefaultAzureCredential (no API keys)
 // =============================================================================
 
 @description('Name of the Container Apps Environment')
@@ -52,9 +52,6 @@ param customVisionProjectId string
 
 @description('Custom Vision published iteration name (e.g. polecheck-20240101-1)')
 param customVisionPublishedName string
-
-@description('Key Vault URI (e.g. https://kv-name.vault.azure.net/)')
-param kvUri string
 
 @description('Application Insights connection string')
 param appInsightsConnectionString string
@@ -112,14 +109,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
           identity: 'system'
         }
       ]
-      secrets: [
-        {
-          // Key Vault reference — Container Apps fetches the secret using the app's managed identity
-          name: 'vision-key'
-          keyVaultUrl: '${kvUri}secrets/VISION-KEY'
-          identity: 'system'
-        }
-      ]
+      secrets: []
     }
     template: {
       containers: [
@@ -158,10 +148,6 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             {
               name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
               value: appInsightsConnectionString
-            }
-            {
-              name: 'VISION_KEY'
-              secretRef: 'vision-key'
             }
             {
               name: 'ASPNETCORE_ENVIRONMENT'

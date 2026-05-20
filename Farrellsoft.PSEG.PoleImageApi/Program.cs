@@ -9,6 +9,7 @@ builder.Services.AddOpenApi();
 // Register application services
 builder.Services.AddTransient<AnalyzePoleImageService>();
 builder.Services.AddSingleton<BlobStorageService>();
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IImageDataExtractService, CustomVisionPredictionImageDataExtractService>();
 builder.Services.AddSingleton<IImageReadService, GptResponseImageReadService>();
 
@@ -43,7 +44,10 @@ app.UseHttpsRedirection();
 
 app.UseCors("FrontendPolicy");
 
-app.MapPost("/image/analyze",async (IFormFile file, AnalyzePoleImageService analysisService) =>
+app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }))
+   .WithName("Health");
+
+app.MapPost("/image/analyze", async (IFormFile file, AnalyzePoleImageService analysisService) =>
 {
     if (file == null || file.Length == 0)
     {
