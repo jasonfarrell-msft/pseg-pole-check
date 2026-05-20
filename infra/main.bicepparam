@@ -25,54 +25,54 @@ param location = 'eastus2'
 // ---------------------------------------------------------------------------
 // Monitoring
 // ---------------------------------------------------------------------------
-param workspaceName = 'mlpsegpoleappe8868312120'
-param appInsightsName = 'appi-pole-app-eus2-mx01'
+param workspaceName = 'mlpsegpoleappeus2px01'
+param appInsightsName = 'appi-pole-app-eus2-px01'
 
 // ---------------------------------------------------------------------------
 // Storage
 // ---------------------------------------------------------------------------
-param storageAccountName = 'stpoleappdemoeus2mx01'
+param storageAccountName = 'stpoleappdemoeus2px01'
 
 // ---------------------------------------------------------------------------
 // Key Vault
 // ---------------------------------------------------------------------------
-param kvName = 'kv-pole-app-eus2-mx01'
+param kvName = 'kv-pole-app-eus2-px01'
 
 // ---------------------------------------------------------------------------
 // Custom Vision (always deployed to East US — Azure limitation)
 // ---------------------------------------------------------------------------
-param customVisionTrainingName = 'visionpoleappeus2mx01'
-param customVisionPredictionName = 'visionpoleappeus2mx01-Prediction'
+param customVisionTrainingName = 'visionpoleappeus2px01'
+param customVisionPredictionName = 'visionpoleappeus2px01-Prediction'
 
 // ---------------------------------------------------------------------------
 // Computer Vision
 // ---------------------------------------------------------------------------
-param computerVisionName = 'vision-pole-app-eus2-mx02'
+param computerVisionName = 'vision-pole-app-eus2-px01'
 
 // ---------------------------------------------------------------------------
 // Container Registry
 // ---------------------------------------------------------------------------
-param acrName = 'crpsegpoleappeus2mx01'
+param acrName = 'crpsegpoleappeus2px01'
 
 // ---------------------------------------------------------------------------
-// Azure AI Foundry (NEW resource in East US 2 — distinct from Central US drift)
+// Azure AI Foundry (deployed alongside everything else in the same RG)
 // ---------------------------------------------------------------------------
-param foundryAccountName = 'foundry-pseg-pole-eus2'
+param foundryAccountName = 'foundry-pseg-pole-eus2-px01'
 param foundryProjectName = 'pole-verify-project'
-param foundryModelName = 'gpt-4o'
-param foundryModelVersion = '2024-11-20'
+param foundryModelName = 'gpt-4.1'
+param foundryModelVersion = '2025-04-14'
 param foundryModelCapacity = 10
 
 // ---------------------------------------------------------------------------
 // Container App
 // ---------------------------------------------------------------------------
-param containerAppEnvName = 'cae-pseg-poleapp-eus2-mx01'
-param containerAppName = 'aca-image-api-eus2-mx01'
+param containerAppEnvName = 'cae-pseg-poleapp-eus2-px01'
+param containerAppName = 'aca-image-api-eus2-px01'
 param containerAppImageTag = 'latest' // Override with git SHA at deploy time
 
 // ---------------------------------------------------------------------------
 // Custom Vision runtime config
 // Set these after first deploy once the Custom Vision project exists
 // ---------------------------------------------------------------------------
-param customVisionProjectId = '<set-post-deploy>'       // Custom Vision project GUID
-param customVisionPublishedName = '<set-post-deploy>'   // Published iteration name (e.g. polecheck-20240101-1)
+param customVisionProjectId = '6de5df3f-8ad0-4573-ac39-3c476df7b865'
+param customVisionPublishedName = 'polecheck-20260520-01'
