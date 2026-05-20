@@ -110,6 +110,7 @@ param environment string = 'dev'
 var commonTags = {
   environment: environment
   project: 'pseg-pole-check'
+  SecurityControl: 'Ignore'
 }
 
 // ===========================================================================
