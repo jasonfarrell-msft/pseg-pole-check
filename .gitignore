@@ -3,6 +3,7 @@ obj/
 .vs/
 
 node_modules/
+frontend/dist/
 # Squad: ignore runtime state (logs, inbox, sessions)
 .squad/orchestration-log/
 .squad/log/
